@@ -1,0 +1,35 @@
+[
+  {
+    "id": "offer-001",
+    "provider": "CarrierAlpha",
+    "data": "5GB",
+    "speed": "4G LTE",
+    "coverage": "nationwide",
+    "priceUSD": "12.99",
+    "priceCrypto": "0.00021 BTC",
+    "cryptoCurrency": "BTC",
+    "sla": "99.5% uptime guaranteed"
+  },
+  {
+    "id": "offer-002",
+    "provider": "NetStream Mobile",
+    "data": "15GB",
+    "speed": "5G",
+    "coverage": "nationwide",
+    "priceUSD": "24.99",
+    "priceCrypto": "0.00040 BTC",
+    "cryptoCurrency": "BTC",
+    "sla": "99.9% uptime guaranteed"
+  },
+  {
+    "id": "offer-003",
+    "provider": "ValueConnect",
+    "data": "Unlimited",
+    "speed": "4G LTE",
+    "coverage": "urban areas",
+    "priceUSD": "19.99",
+    "priceCrypto": "0.00032 BTC",
+    "cryptoCurrency": "BTC",
+    "sla": "99.0% uptime guaranteed"
+  }
+]

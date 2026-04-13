@@ -1,0 +1,53 @@
+require('dotenv').config();
+const { Telegraf, session, Scenes } = require('telegraf');
+const { onboardScene } = require('./handlers/onboard');
+const { offersScene } = require('./handlers/offers');
+const { showStatus } = require('./handlers/status');
+
+const bot = new Telegraf(process.env.BOT_TOKEN);
+
+// Session middleware — stores subscriber state in memory (swap for Redis in production)
+bot.use(session());
+
+// Scene manager — handles multi-step conversation flows
+const stage = new Scenes.Stage([onboardScene, offersScene]);
+bot.use(stage.middleware());
+
+// ── Commands ──────────────────────────────────────────────────────────────────
+
+bot.start((ctx) => {
+  const name = ctx.from.first_name || 'there';
+  ctx.reply(
+    `👋 Welcome to blocfone®, ${name}!\n\n` +
+    `blocfone® is a decentralised mobile marketplace — compare competing carrier offers and pay with crypto, all governed by smart contracts.\n\n` +
+    `What would you like to do?\n\n` +
+    `/offers — Browse available service plans\n` +
+    `/status — View your active subscription\n` +
+    `/help   — How blocfone® works`
+  );
+});
+
+bot.command('offers', (ctx) => ctx.scene.enter('offers'));
+bot.command('status', showStatus);
+
+bot.command('help', (ctx) => {
+  ctx.reply(
+    `ℹ️ How blocfone® works\n\n` +
+    `1. Browse competing mobile service offers from multiple carriers\n` +
+    `2. Select a plan — price, speed, and coverage are shown upfront\n` +
+    `3. Confirm with crypto — a smart contract locks in the terms\n` +
+    `4. The contract monitors performance automatically\n` +
+    `5. If the carrier underperforms, the contract enforces penalties\n\n` +
+    `Built on US Patent 10,915,873 B2 | EU Patent EP3542333A1`
+  );
+});
+
+// ── Launch ─────────────────────────────────────────────────────────────────────
+
+bot.launch(() => {
+  console.log('blocfone® bot is running...');
+});
+
+// Graceful shutdown
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
