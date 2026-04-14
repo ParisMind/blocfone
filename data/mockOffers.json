@@ -6,7 +6,8 @@
     "speed": "4G LTE",
     "coverage": "nationwide",
     "priceUSDT": "12.99",
-    "cryptoCurrency": "USDT"
+    "cryptoCurrency": "USDT",
+    "sla": "99.5% uptime guaranteed"
   },
   {
     "id": "offer-002",
@@ -15,7 +16,8 @@
     "speed": "5G",
     "coverage": "nationwide",
     "priceUSDT": "24.99",
-    "cryptoCurrency": "USDT"
+    "cryptoCurrency": "USDT",
+    "sla": "99.9% uptime guaranteed"
   },
   {
     "id": "offer-003",
@@ -24,6 +26,7 @@
     "speed": "4G LTE",
     "coverage": "urban areas",
     "priceUSDT": "19.99",
-    "cryptoCurrency": "USDT"
+    "cryptoCurrency": "USDT",
+    "sla": "99.0% uptime guaranteed"
   }
 ]
