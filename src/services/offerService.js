@@ -36,15 +36,17 @@ function getOfferById(offerId) {
  * Formats an offer for display in Telegram.
  * @param {Object} offer
  * @param {number} index - display index (1-based)
+ * @param {string} [localPrice] - pre-calculated local currency string e.g. "≈ €11.94"
  * @returns {string}
  */
-function formatOffer(offer, index) {
+function formatOffer(offer, index, localPrice = '') {
   const coverage = offer.coverage === 'nationwide' ? '🌐 Nationwide' : `📍 ${offer.coverage}`;
+  const priceLocal = localPrice ? ` (${localPrice})` : '';
   return (
     `${index}. *${offer.provider}*\n` +
     `   ${offer.data} data · ${offer.speed}\n` +
     `   ${coverage}\n` +
-    `   💰 ${offer.priceUSDT} USD₮/mo\n` +
+    `   💰 ${offer.priceUSDT} USD₮/mo${priceLocal}\n` +
     `   SLA: ${offer.sla}`
   );
 }

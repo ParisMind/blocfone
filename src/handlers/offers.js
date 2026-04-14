@@ -10,7 +10,7 @@ const { Scenes, Markup } = require('telegraf');
 const { getOffersForSubscriber, getOfferById, formatOffer } = require('../services/offerService');
 const { createPaymentRequest, confirmPayment } = require('../services/walletService');
 const { createContract, formatContract } = require('../services/contractService');
-const { getCityFromCoords } = require('../services/locationService');
+const { getLocationInfo, toLocalCurrency } = require('../services/locationService');
 
 const offersScene = new Scenes.BaseScene('offers');
 
@@ -34,14 +34,20 @@ offersScene.on('location', async (ctx) => {
   // Store coords in session for offer matching
   ctx.session.location = { latitude, longitude };
 
-  // Resolve city name
-  const city = await getCityFromCoords(latitude, longitude);
+  // Resolve city, country, and local currency
+  const { city, currency } = await getLocationInfo(latitude, longitude);
   ctx.session.city = city;
+  ctx.session.currency = currency;
 
   const subscriberId = String(ctx.from.id);
   const offers = getOffersForSubscriber(subscriberId);
 
-  const lines = offers.map((o, i) => formatOffer(o, i + 1)).join('\n\n');
+  // Pre-calculate local currency equivalent for each offer
+  const localPrices = await Promise.all(
+    offers.map((o) => toLocalCurrency(o.priceUSDT, currency))
+  );
+
+  const lines = offers.map((o, i) => formatOffer(o, i + 1, localPrices[i])).join('\n\n');
   const buttons = offers.map((o, i) =>
     Markup.button.callback(`${i + 1}. ${o.provider}`, `select_${o.id}`)
   );
