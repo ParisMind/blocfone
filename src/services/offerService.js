@@ -44,7 +44,7 @@ function formatOffer(offer, index) {
     `${index}. *${offer.provider}*\n` +
     `   ${offer.data} data · ${offer.speed}\n` +
     `   ${coverage}\n` +
-    `   💰 ${offer.priceUSD} USD/mo (≈ ${offer.priceCrypto})\n` +
+    `   💰 ${offer.priceUSDT} USD₮/mo\n` +
     `   SLA: ${offer.sla}`
   );
 }

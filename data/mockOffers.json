@@ -5,10 +5,8 @@
     "data": "5GB",
     "speed": "4G LTE",
     "coverage": "nationwide",
-    "priceUSD": "12.99",
-    "priceCrypto": "0.00021 BTC",
-    "cryptoCurrency": "BTC",
-    "sla": "99.5% uptime guaranteed"
+    "priceUSDT": "12.99",
+    "cryptoCurrency": "USDT"
   },
   {
     "id": "offer-002",
@@ -16,10 +14,8 @@
     "data": "15GB",
     "speed": "5G",
     "coverage": "nationwide",
-    "priceUSD": "24.99",
-    "priceCrypto": "0.00040 BTC",
-    "cryptoCurrency": "BTC",
-    "sla": "99.9% uptime guaranteed"
+    "priceUSDT": "24.99",
+    "cryptoCurrency": "USDT"
   },
   {
     "id": "offer-003",
@@ -27,9 +23,7 @@
     "data": "Unlimited",
     "speed": "4G LTE",
     "coverage": "urban areas",
-    "priceUSD": "19.99",
-    "priceCrypto": "0.00032 BTC",
-    "cryptoCurrency": "BTC",
-    "sla": "99.0% uptime guaranteed"
+    "priceUSDT": "19.99",
+    "cryptoCurrency": "USDT"
   }
 ]

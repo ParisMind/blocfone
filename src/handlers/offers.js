@@ -83,7 +83,7 @@ offersScene.action(/^select_(.+)$/, (ctx) => {
   ctx.replyWithMarkdown(
     `✅ You selected *${offer.provider} — ${offer.data}*\n\n` +
     `To activate your contract, send:\n\n` +
-    `💰 *${payment.amount} ${payment.currency}*\n` +
+    `💰 *${payment.amount} USD₮*\n` +
     `📬 To address: \`${payment.address}\`\n` +
     `⏱ Expires in: ${payment.expiresIn}\n\n` +
     `_(In this demo, tap Confirm to simulate payment)_`,

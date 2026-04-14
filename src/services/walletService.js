@@ -18,7 +18,7 @@
 function createPaymentRequest(offer) {
   return {
     address: `0xMOCK_${Math.random().toString(36).slice(2, 10).toUpperCase()}`,
-    amount: offer.priceCrypto,
+    amount: offer.priceUSDT,
     currency: offer.cryptoCurrency,
     expiresIn: '15 minutes',
     memo: `blocfone® — ${offer.provider} — ${offer.data} plan`,

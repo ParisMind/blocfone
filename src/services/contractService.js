@@ -28,8 +28,7 @@ function createContract(subscriberId, offer, payment) {
     subscriberId,
     provider: offer.provider,
     plan: `${offer.data} · ${offer.speed}`,
-    priceUSD: offer.priceUSD,
-    priceCrypto: offer.priceCrypto,
+    priceUSDT: offer.priceUSDT,
     cryptoCurrency: offer.cryptoCurrency,
     txHash: payment.txHash,
     status: 'active',
@@ -67,7 +66,7 @@ function formatContract(contract) {
     `📋 *Active Contract*\n\n` +
     `Provider: ${contract.provider}\n` +
     `Plan: ${contract.plan}\n` +
-    `Price: ${contract.priceUSD} USD/mo (${contract.priceCrypto})\n` +
+    `Price: ${contract.priceUSDT} USD₮/mo\n` +
     `SLA: ${contract.sla}\n` +
     `Status: ✅ Active\n` +
     `Activated: ${activated}\n` +
