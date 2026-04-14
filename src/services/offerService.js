@@ -46,7 +46,7 @@ function formatOffer(offer, index, localPrice = '') {
     `${index}. *${offer.provider}*\n` +
     `   ${offer.data} data · ${offer.speed}\n` +
     `   ${coverage}\n` +
-    `   💰 ${offer.priceUSDT} USD₮/mo${priceLocal}\n` +
+    `   💰 ${offer.priceUSDT} USD₮ per month${priceLocal}\n` +
     `   SLA: ${offer.sla}`
   );
 }

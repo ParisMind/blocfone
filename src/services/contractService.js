@@ -73,7 +73,7 @@ function formatContract(contract) {
     `📋 *Active Contract*\n\n` +
     `Provider: ${contract.provider}\n` +
     `Plan: ${contract.plan}\n` +
-    `Price: ${contract.priceUSDT} USD₮/mo\n` +
+    `Price: ${contract.priceUSDT} USD₮ per month\n` +
     `SLA: ${contract.sla}\n` +
     `Status: ✅ Active\n` +
     `Activated: ${activated}\n` +
