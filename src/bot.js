@@ -19,7 +19,7 @@ bot.start((ctx) => {
   const name = ctx.from.first_name || 'there';
   ctx.reply(
     `👋 Welcome to blocfone®, ${name}!\n\n` +
-    `blocfone® is a decentralised mobile marketplace — compare competing carrier offers and pay with crypto, all governed by smart contracts.\n\n` +
+    `blocfone® is a patented, real-time, neutral, and open marketplace where mobile subscribers experience uncomplicated connectivity with participating mobile providers, by paying in cryptocurrency (e.g., stablecoin), and having service terms enforced automatically by smart contracts. In return, mobile providers boost customer loyalty and expand revenue streams while delivering better customer experiences and driving efficiencies by eliminating multi-carrier agreements.\n\n` +
     `What would you like to do?\n\n` +
     `/offers — Browse available service plans\n` +
     `/status — View your active subscription\n` +
