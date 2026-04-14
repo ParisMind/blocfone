@@ -11,6 +11,7 @@ const { getOffersForSubscriber, getOfferById, formatOffer } = require('../servic
 const { createPaymentRequest, confirmPayment } = require('../services/walletService');
 const { createContract, formatContract } = require('../services/contractService');
 const { getLocationInfo, toLocalCurrency } = require('../services/locationService');
+const { sendStartScreen } = require('./start');
 
 const offersScene = new Scenes.BaseScene('offers');
 
@@ -66,8 +67,8 @@ offersScene.on('location', async (ctx) => {
 // ── Cancel from keyboard ───────────────────────────────────────────────────────
 
 offersScene.hears('❌ Cancel', (ctx) => {
-  ctx.reply('Cancelled.', Markup.removeKeyboard());
   ctx.scene.leave();
+  sendStartScreen(ctx);
 });
 
 // ── Step 3: Subscriber selects an offer ───────────────────────────────────────
@@ -128,8 +129,8 @@ offersScene.action('confirm_payment', (ctx) => {
 });
 
 offersScene.action('cancel', (ctx) => {
-  ctx.reply('Cancelled. Type /offers any time to browse plans.');
   ctx.scene.leave();
+  sendStartScreen(ctx);
 });
 
 module.exports = { offersScene };

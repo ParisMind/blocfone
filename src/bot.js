@@ -3,6 +3,7 @@ const { Telegraf, session, Scenes } = require('telegraf');
 const { onboardScene } = require('./handlers/onboard');
 const { offersScene } = require('./handlers/offers');
 const { showStatus } = require('./handlers/status');
+const { sendStartScreen } = require('./handlers/start');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -15,18 +16,7 @@ bot.use(stage.middleware());
 
 // ── Commands ──────────────────────────────────────────────────────────────────
 
-bot.start((ctx) => {
-  const name = ctx.from.first_name || 'there';
-  ctx.reply(
-    `👋 Welcome to blocfone®, ${name}!\n\n` +
-    `blocfone® is a patented, real-time, neutral, and open marketplace where mobile subscribers experience uncomplicated connectivity with participating mobile providers, by paying in cryptocurrency (e.g., stablecoin), and having service terms enforced automatically by smart contracts. In return, mobile providers boost customer loyalty and expand revenue streams while delivering better customer experiences and driving efficiencies by eliminating multi-carrier agreements.\n\n` +
-    `What would you like to do?\n\n` +
-    `/offers — Browse available service plans\n` +
-    `/status — View your active subscription\n` +
-    `/help   — How blocfone® works`
-  );
-});
-
+bot.start((ctx) => sendStartScreen(ctx));
 bot.command('offers', (ctx) => ctx.scene.enter('offers'));
 bot.command('status', showStatus);
 
