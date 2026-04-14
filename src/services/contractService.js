@@ -60,8 +60,15 @@ function getContract(subscriberId) {
  * @returns {string}
  */
 function formatContract(contract) {
-  const activated = new Date(contract.activatedAt).toLocaleDateString('en-GB');
-  const expires = new Date(contract.expiresAt).toLocaleDateString('en-GB');
+  const formatDate = (iso) => {
+    const d = new Date(iso);
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = d.toLocaleString('en-GB', { month: 'long' });
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+  const activated = formatDate(contract.activatedAt);
+  const expires = formatDate(contract.expiresAt);
   return (
     `📋 *Active Contract*\n\n` +
     `Provider: ${contract.provider}\n` +
