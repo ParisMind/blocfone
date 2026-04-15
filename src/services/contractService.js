@@ -29,6 +29,7 @@ function createContract(subscriberId, offer, payment) {
     provider: offer.provider,
     plan: `${offer.data} · ${offer.speed}`,
     priceUSDT: offer.priceUSDT,
+    stars: offer.stars,
     cryptoCurrency: offer.cryptoCurrency,
     txHash: payment.txHash,
     status: 'active',

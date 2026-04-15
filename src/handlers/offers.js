@@ -119,7 +119,8 @@ offersScene.action('confirm_payment', (ctx) => {
   ctx.replyWithMarkdown(
     `🎉 *Contract Activated!*\n\n` +
     formatContract(contract) +
-    `\n\nYour mobile service is now active. Use /status to view your contract at any time.`
+    `\n\n⭐ You have earned ${contract.stars} Telegram Stars!\n\n` +
+    `Your mobile service is now active. Use /status to view your contract at any time.`
   );
 
   delete ctx.session.selectedOffer;
