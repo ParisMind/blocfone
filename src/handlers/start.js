@@ -1,8 +1,9 @@
 /**
  * start.js
  *
- * Shared welcome screen — called on /start and any Cancel action
- * so the user always lands back at the same home state.
+ * Shared helpers:
+ *   sendStartScreen — full welcome message, called on /start
+ *   sendStartButton — minimal Start button, called on Cancel
  */
 
 const { Markup } = require('telegraf');
@@ -20,4 +21,13 @@ function sendStartScreen(ctx) {
   );
 }
 
-module.exports = { sendStartScreen };
+function sendStartButton(ctx) {
+  return ctx.reply(
+    'Tap Start to begin.',
+    Markup.keyboard([['Start']])
+      .resize()
+      .oneTime()
+  );
+}
+
+module.exports = { sendStartScreen, sendStartButton };

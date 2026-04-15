@@ -3,7 +3,7 @@ const { Telegraf, session, Scenes } = require('telegraf');
 const { onboardScene } = require('./handlers/onboard');
 const { offersScene } = require('./handlers/offers');
 const { showStatus } = require('./handlers/status');
-const { sendStartScreen } = require('./handlers/start');
+const { sendStartScreen, sendStartButton } = require('./handlers/start');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -17,6 +17,7 @@ bot.use(stage.middleware());
 // ── Commands ──────────────────────────────────────────────────────────────────
 
 bot.start((ctx) => sendStartScreen(ctx));
+bot.hears('Start', (ctx) => sendStartScreen(ctx));
 bot.command('offers', (ctx) => ctx.scene.enter('offers'));
 bot.command('status', showStatus);
 
