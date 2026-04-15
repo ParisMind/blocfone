@@ -1,7 +1,7 @@
 /**
  * offers.js
  *
- * Multi-step scene: request location → browse offers → select → pay → activate contract.
+ * Multi-step scene: select period → request location → browse offers → select → pay → activate.
  * Patent ref: Claims 1, 2, 8 — location-aware offer routing, subscriber selection,
  * smart contract formation, and payment via cryptocurrency.
  */
@@ -15,11 +15,28 @@ const { sendStartButton } = require('./start');
 
 const offersScene = new Scenes.BaseScene('offers');
 
-// ── Step 1: Request location ───────────────────────────────────────────────────
+// ── Step 1: Ask for time period ────────────────────────────────────────────────
 
 offersScene.enter((ctx) => {
+  ctx.replyWithMarkdown(
+    `🗓 *What time period would you like the offers to be a fixed price?*`,
+    Markup.inlineKeyboard([
+      Markup.button.callback('1 Day',   'period_1 day'),
+      Markup.button.callback('1 Week',  'period_1 week'),
+      Markup.button.callback('1 Month', 'period_1 month'),
+      Markup.button.callback('1 Year',  'period_1 year'),
+    ], { columns: 2 })
+  );
+});
+
+// ── Step 2: Store period and request location ──────────────────────────────────
+
+offersScene.action(/^period_(.+)$/, (ctx) => {
+  const period = ctx.match[1];
+  ctx.session.period = period;
+
   ctx.reply(
-    '📍 To show you the best available plans, blocfone® needs your current location.',
+    `📍 To show you the best available plans, blocfone® needs your current location.`,
     Markup.keyboard([
       [Markup.button.locationRequest('📍 Share my location')],
       ['❌ Cancel'],
@@ -27,15 +44,14 @@ offersScene.enter((ctx) => {
   );
 });
 
-// ── Step 2: Receive location and show offers ───────────────────────────────────
+// ── Step 3: Receive location and show offers ───────────────────────────────────
 
 offersScene.on('location', async (ctx) => {
   const { latitude, longitude } = ctx.message.location;
+  const period = ctx.session.period || '1 month';
 
-  // Store coords in session for offer matching
   ctx.session.location = { latitude, longitude };
 
-  // Resolve city, country, and local currency
   const { city, currency } = await getLocationInfo(latitude, longitude);
   ctx.session.city = city;
   ctx.session.currency = currency;
@@ -43,20 +59,16 @@ offersScene.on('location', async (ctx) => {
   const subscriberId = String(ctx.from.id);
   const offers = getOffersForSubscriber(subscriberId);
 
-  // Pre-calculate local currency equivalent for each offer
   const localPrices = await Promise.all(
     offers.map((o) => toLocalCurrency(o.priceUSDT, currency))
   );
 
-  const lines = offers.map((o, i) => formatOffer(o, i + 1, localPrices[i])).join('\n\n');
+  const lines = offers.map((o, i) => formatOffer(o, i + 1, localPrices[i], period)).join('\n\n');
   const buttons = offers.map((o, i) =>
     Markup.button.callback(`${i + 1}. ${o.provider}`, `select_${o.id}`)
   );
 
-  await ctx.reply(
-    'Got it — searching for plans near you...',
-    Markup.removeKeyboard()
-  );
+  await ctx.reply('Got it — searching for plans near you...', Markup.removeKeyboard());
 
   ctx.replyWithMarkdown(
     `📡 *Here are the best offers where you are now in ${city}*\n\n${lines}\n\nTap a plan to select it, or /start to go back.`,
@@ -71,11 +83,12 @@ offersScene.hears('❌ Cancel', (ctx) => {
   sendStartButton(ctx);
 });
 
-// ── Step 3: Subscriber selects an offer ───────────────────────────────────────
+// ── Step 4: Subscriber selects an offer ───────────────────────────────────────
 
 offersScene.action(/^select_(.+)$/, (ctx) => {
   const offerId = ctx.match[1];
   const offer = getOfferById(offerId);
+  const period = ctx.session.period || '1 month';
 
   if (!offer) {
     ctx.reply('Sorry, that offer is no longer available. Type /offers to refresh.');
@@ -88,7 +101,7 @@ offersScene.action(/^select_(.+)$/, (ctx) => {
   ctx.session.paymentRequest = payment;
 
   ctx.replyWithMarkdown(
-    `✅ You selected *${offer.provider} — ${offer.data}*\n\n` +
+    `✅ You selected *${offer.provider} — ${offer.data}* for *${period}*\n\n` +
     `To activate your contract, send:\n\n` +
     `💰 *${payment.amount} USD₮*\n` +
     `📬 To address: \`${payment.address}\`\n` +
@@ -101,12 +114,13 @@ offersScene.action(/^select_(.+)$/, (ctx) => {
   );
 });
 
-// ── Step 4: Confirm payment and activate contract ──────────────────────────────
+// ── Step 5: Confirm payment and activate contract ──────────────────────────────
 
 offersScene.action('confirm_payment', (ctx) => {
   const subscriberId = String(ctx.from.id);
   const offer = ctx.session.selectedOffer;
   const paymentRequest = ctx.session.paymentRequest;
+  const period = ctx.session.period || '1 month';
 
   if (!offer || !paymentRequest) {
     ctx.reply('Session expired. Please type /offers to start again.');
@@ -114,7 +128,7 @@ offersScene.action('confirm_payment', (ctx) => {
   }
 
   const payment = confirmPayment(paymentRequest.address);
-  const contract = createContract(subscriberId, offer, payment);
+  const contract = createContract(subscriberId, offer, payment, period);
 
   ctx.replyWithMarkdown(
     `🎉 *Contract Activated!*\n\n` +
@@ -125,6 +139,7 @@ offersScene.action('confirm_payment', (ctx) => {
 
   delete ctx.session.selectedOffer;
   delete ctx.session.paymentRequest;
+  delete ctx.session.period;
 
   ctx.scene.leave();
 });

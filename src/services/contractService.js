@@ -15,14 +15,24 @@ const { v4: uuidv4 } = require('uuid');
 // In-memory store — swap for PostgreSQL in production
 const activeContracts = new Map();
 
+// Maps period label to milliseconds for expiry calculation
+const PERIOD_MS = {
+  '1 day':   1 * 24 * 60 * 60 * 1000,
+  '1 week':  7 * 24 * 60 * 60 * 1000,
+  '1 month': 30 * 24 * 60 * 60 * 1000,
+  '1 year':  365 * 24 * 60 * 60 * 1000,
+};
+
 /**
  * Creates a new service contract after payment is confirmed.
  * @param {string} subscriberId - Telegram user ID
  * @param {Object} offer - accepted offer
  * @param {Object} payment - confirmed payment details
+ * @param {string} period - selected fixed price period
  * @returns {Object} contract record
  */
-function createContract(subscriberId, offer, payment) {
+function createContract(subscriberId, offer, payment, period = '1 month') {
+  const durationMs = PERIOD_MS[period] || PERIOD_MS['1 month'];
   const contract = {
     id: uuidv4(),
     subscriberId,
@@ -31,13 +41,14 @@ function createContract(subscriberId, offer, payment) {
     priceUSDT: offer.priceUSDT,
     stars: offer.stars,
     cryptoCurrency: offer.cryptoCurrency,
+    period,
     txHash: payment.txHash,
     status: 'active',
     sla: offer.sla,
     activatedAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+    expiresAt: new Date(Date.now() + durationMs).toISOString(),
     performance: {
-      uptimePercent: null, // populated by PerformanceOracle in production
+      uptimePercent: null,
       violations: 0,
     },
   };
@@ -74,6 +85,7 @@ function formatContract(contract) {
     `📋 *Active Contract*\n\n` +
     `Provider: ${contract.provider}\n` +
     `Plan: ${contract.plan}\n` +
+    `🗓 Fixed price for: ${contract.period}\n` +
     `Price: ${contract.priceUSDT} USD₮ per month\n` +
     `SLA: ${contract.sla}\n` +
     `Status: ✅ Active\n` +

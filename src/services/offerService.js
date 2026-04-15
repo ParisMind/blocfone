@@ -37,15 +37,17 @@ function getOfferById(offerId) {
  * @param {Object} offer
  * @param {number} index - display index (1-based)
  * @param {string} [localPrice] - pre-calculated local currency string e.g. "≈ €11.94"
+ * @param {string} [period] - selected time period e.g. "1 month"
  * @returns {string}
  */
-function formatOffer(offer, index, localPrice = '') {
+function formatOffer(offer, index, localPrice = '', period = '1 month') {
   const coverage = offer.coverage === 'nationwide' ? '🌐 Nationwide' : `📍 ${offer.coverage}`;
   const priceLocal = localPrice ? ` (${localPrice})` : '';
   return (
     `${index}. *${offer.provider}*\n` +
     `   ${offer.data} data · ${offer.speed}\n` +
     `   ${coverage}\n` +
+    `   🗓 Fixed price for: ${period}\n` +
     `   💰 ${offer.priceUSDT} USD₮ per month${priceLocal}\n` +
     `   ⭐ ${offer.stars} Telegram Stars\n` +
     `   SLA: ${offer.sla}`
