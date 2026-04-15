@@ -2,12 +2,12 @@
   {
     "id": "offer-001",
     "provider": "ValueConnect",
-    "data": "Unlimited",
+    "data": "5GB",
     "speed": "4G LTE",
-    "coverage": "urban areas",
-    "priceUSDT": "19.99",
+    "coverage": "nationwide",
+    "priceUSDT": "12.99",
     "cryptoCurrency": "USDT",
-    "sla": "99.0% uptime guaranteed"
+    "sla": "99.5% uptime guaranteed"
   },
   {
     "id": "offer-002",
@@ -22,11 +22,11 @@
   {
     "id": "offer-003",
     "provider": "CarrierAlpha",
-    "data": "5GB",
+    "data": "Unlimited",
     "speed": "4G LTE",
-    "coverage": "nationwide",
-    "priceUSDT": "12.99",
+    "coverage": "urban areas",
+    "priceUSDT": "19.99",
     "cryptoCurrency": "USDT",
-    "sla": "99.5% uptime guaranteed"
+    "sla": "99.0% uptime guaranteed"
   }
 ]
