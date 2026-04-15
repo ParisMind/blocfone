@@ -47,6 +47,7 @@ function formatOffer(offer, index, localPrice = '') {
     `   ${offer.data} data · ${offer.speed}\n` +
     `   ${coverage}\n` +
     `   💰 ${offer.priceUSDT} USD₮ per month${priceLocal}\n` +
+    `   ⭐ ${offer.stars} Telegram Stars\n` +
     `   SLA: ${offer.sla}`
   );
 }
