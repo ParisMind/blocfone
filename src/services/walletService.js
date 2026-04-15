@@ -15,10 +15,10 @@
  * @param {Object} offer - the selected offer
  * @returns {Object} mock payment details
  */
-function createPaymentRequest(offer) {
+function createPaymentRequest(offer, periodPrice) {
   return {
     address: `0xMOCK_${Math.random().toString(36).slice(2, 10).toUpperCase()}`,
-    amount: offer.priceUSDT,
+    amount: periodPrice ?? offer.priceUSDT,
     currency: offer.cryptoCurrency,
     expiresIn: '15 minutes',
     memo: `blocfone® — ${offer.provider} — ${offer.data} plan`,

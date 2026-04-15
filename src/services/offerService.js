@@ -11,6 +11,32 @@
 
 const offers = require('../../data/mockOffers.json');
 
+// Price multipliers relative to the monthly base rate
+const PERIOD_MULTIPLIER = {
+  '1 day':   1 / 30,
+  '1 week':  7 / 30,
+  '1 month': 1,
+  '1 year':  12,
+};
+
+const PERIOD_LABEL = {
+  '1 day':   'per day',
+  '1 week':  'per week',
+  '1 month': 'per month',
+  '1 year':  'per year',
+};
+
+/**
+ * Calculates the price for a given period from the monthly base rate.
+ * @param {string|number} monthlyPrice
+ * @param {string} period
+ * @returns {string} price rounded to 2 decimal places
+ */
+function calculatePeriodPrice(monthlyPrice, period) {
+  const multiplier = PERIOD_MULTIPLIER[period] ?? 1;
+  return (parseFloat(monthlyPrice) * multiplier).toFixed(2);
+}
+
 /**
  * Returns a list of available offers for a subscriber.
  * In production this filters by the subscriber's location and device capability.
@@ -42,16 +68,18 @@ function getOfferById(offerId) {
  */
 function formatOffer(offer, index, localPrice = '', period = '1 month') {
   const coverage = offer.coverage === 'nationwide' ? '🌐 Nationwide' : `📍 ${offer.coverage}`;
+  const periodPrice = calculatePeriodPrice(offer.priceUSDT, period);
+  const periodLabel = PERIOD_LABEL[period] || 'per month';
   const priceLocal = localPrice ? ` (${localPrice})` : '';
   return (
     `${index}. *${offer.provider}*\n` +
     `   ${offer.data} data · ${offer.speed}\n` +
     `   ${coverage}\n` +
     `   🗓 Fixed price for: ${period}\n` +
-    `   💰 ${offer.priceUSDT} USD₮ per month${priceLocal}\n` +
+    `   💰 ${periodPrice} USD₮ ${periodLabel}${priceLocal}\n` +
     `   ⭐ ${offer.stars} Telegram Stars\n` +
     `   SLA: ${offer.sla}`
   );
 }
 
-module.exports = { getOffersForSubscriber, getOfferById, formatOffer };
+module.exports = { getOffersForSubscriber, getOfferById, formatOffer, calculatePeriodPrice };

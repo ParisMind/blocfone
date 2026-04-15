@@ -38,7 +38,7 @@ function createContract(subscriberId, offer, payment, period = '1 month') {
     subscriberId,
     provider: offer.provider,
     plan: `${offer.data} · ${offer.speed}`,
-    priceUSDT: offer.priceUSDT,
+    priceUSDT: payment.amount,
     stars: offer.stars,
     cryptoCurrency: offer.cryptoCurrency,
     period,
@@ -86,7 +86,7 @@ function formatContract(contract) {
     `Provider: ${contract.provider}\n` +
     `Plan: ${contract.plan}\n` +
     `🗓 Fixed price for: ${contract.period}\n` +
-    `Price: ${contract.priceUSDT} USD₮ per month\n` +
+    `Price: ${contract.priceUSDT} USD₮ for ${contract.period}\n` +
     `SLA: ${contract.sla}\n` +
     `Status: ✅ Active\n` +
     `Activated: ${activated}\n` +

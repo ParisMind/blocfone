@@ -7,7 +7,7 @@
  */
 
 const { Scenes, Markup } = require('telegraf');
-const { getOffersForSubscriber, getOfferById, formatOffer } = require('../services/offerService');
+const { getOffersForSubscriber, getOfferById, formatOffer, calculatePeriodPrice } = require('../services/offerService');
 const { createPaymentRequest, confirmPayment } = require('../services/walletService');
 const { createContract, formatContract } = require('../services/contractService');
 const { getLocationInfo, toLocalCurrency } = require('../services/locationService');
@@ -60,7 +60,7 @@ offersScene.on('location', async (ctx) => {
   const offers = getOffersForSubscriber(subscriberId);
 
   const localPrices = await Promise.all(
-    offers.map((o) => toLocalCurrency(o.priceUSDT, currency))
+    offers.map((o) => toLocalCurrency(calculatePeriodPrice(o.priceUSDT, period), currency))
   );
 
   const lines = offers.map((o, i) => formatOffer(o, i + 1, localPrices[i], period)).join('\n\n');
@@ -97,7 +97,8 @@ offersScene.action(/^select_(.+)$/, (ctx) => {
 
   ctx.session.selectedOffer = offer;
 
-  const payment = createPaymentRequest(offer);
+  const periodPrice = calculatePeriodPrice(offer.priceUSDT, period);
+  const payment = createPaymentRequest(offer, periodPrice);
   ctx.session.paymentRequest = payment;
 
   ctx.replyWithMarkdown(
