@@ -23,10 +23,10 @@ function sendStartScreen(ctx) {
 
 function sendStartButton(ctx) {
   return ctx.reply(
-    'Tap Start to begin.',
-    Markup.keyboard([['Start']])
-      .resize()
-      .oneTime()
+    'blocfone®',
+    Markup.inlineKeyboard([
+      Markup.button.callback('▶  Start', 'go_start'),
+    ])
   );
 }
 

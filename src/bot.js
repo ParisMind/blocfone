@@ -17,7 +17,7 @@ bot.use(stage.middleware());
 // ── Commands ──────────────────────────────────────────────────────────────────
 
 bot.start((ctx) => sendStartScreen(ctx));
-bot.hears('Start', (ctx) => sendStartScreen(ctx));
+bot.action('go_start', (ctx) => sendStartScreen(ctx));
 bot.command('offers', (ctx) => ctx.scene.enter('offers'));
 bot.command('status', showStatus);
 
