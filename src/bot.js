@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Telegraf, session, Scenes } = require('telegraf');
+const { Telegraf, session, Scenes, Markup } = require('telegraf');
 const { onboardScene } = require('./handlers/onboard');
 const { offersScene } = require('./handlers/offers');
 const { showStatus } = require('./handlers/status');
@@ -33,6 +33,10 @@ bot.command('help', (ctx) => {
     `4. The contract monitors performance automatically\n` +
     `5. If the carrier underperforms, the contract enforces penalties\n\n` +
     `Built on US Patent 10,915,873 B2 | EU Patent EP3542333A1`
+  );
+  ctx.reply(
+    'Tap the button below to go back to the start.',
+    Markup.inlineKeyboard([Markup.button.callback('▶  Start', 'go_start')])
   );
 });
 
