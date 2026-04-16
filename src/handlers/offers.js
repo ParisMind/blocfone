@@ -101,8 +101,12 @@ offersScene.action(/^select_(.+)$/, (ctx) => {
   const payment = createPaymentRequest(offer, periodPrice);
   ctx.session.paymentRequest = payment;
 
+  const planSummary = offer.line1
+    ? `${offer.line1} / ${offer.line2}`
+    : `${offer.data} · ${offer.speed}`;
+
   ctx.replyWithMarkdown(
-    `✅ You selected *${offer.provider} — ${offer.data}* for *${period}*\n\n` +
+    `✅ You selected *${offer.provider} — ${planSummary}* for *${period}*\n\n` +
     `To activate your contract, send:\n\n` +
     `💰 *${payment.amount} USD₮*\n` +
     `📬 To address: \`${payment.address}\`\n` +
