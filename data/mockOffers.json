@@ -15,6 +15,8 @@
   {
     "id": "offer-002",
     "provider": "NetStream Mobile",
+    "line1": "Unlimited Voice & Text",
+    "line2": "25GB Data - 5G",
     "data": "15GB",
     "speed": "5G",
     "coverage": "nationwide",
