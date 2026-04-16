@@ -117,19 +117,26 @@ offersScene.action(/^select_(.+)$/, (ctx) => {
 
 // ── Step 5: Confirm payment and activate contract ──────────────────────────────
 
-offersScene.action('confirm_payment', (ctx) => {
+offersScene.action('confirm_payment', async (ctx) => {
   const subscriberId = String(ctx.from.id);
   const offer = ctx.session.selectedOffer;
   const paymentRequest = ctx.session.paymentRequest;
   const period = ctx.session.period || '1 month';
+  const currency = ctx.session.currency || { code: 'USD', symbol: '$' };
 
   if (!offer || !paymentRequest) {
     ctx.reply('Session expired. Please type /offers to start again.');
     return ctx.scene.leave();
   }
 
+  // Confirm payment and carry the amount through
   const payment = confirmPayment(paymentRequest.address);
-  const contract = createContract(subscriberId, offer, payment, period);
+  payment.amount = paymentRequest.amount;
+
+  // Calculate local currency equivalent for the contract
+  const localPrice = await toLocalCurrency(payment.amount, currency);
+
+  const contract = createContract(subscriberId, offer, payment, period, localPrice);
 
   ctx.replyWithMarkdown(
     `🎉 *Contract Activated!*\n\n` +

@@ -31,7 +31,7 @@ const PERIOD_MS = {
  * @param {string} period - selected fixed price period
  * @returns {Object} contract record
  */
-function createContract(subscriberId, offer, payment, period = '1 month') {
+function createContract(subscriberId, offer, payment, period = '1 month', localPrice = '') {
   const durationMs = PERIOD_MS[period] || PERIOD_MS['1 month'];
   const contract = {
     id: uuidv4(),
@@ -40,6 +40,7 @@ function createContract(subscriberId, offer, payment, period = '1 month') {
     plan: `${offer.data} · ${offer.speed}`,
     priceUSDT: payment.amount,
     basePriceUSDT: offer.priceUSDT,
+    localPrice,
     stars: offer.stars,
     cryptoCurrency: offer.cryptoCurrency,
     period,
@@ -87,7 +88,7 @@ function formatContract(contract) {
     `Provider: ${contract.provider}\n` +
     `Plan: ${contract.plan}\n` +
     `🗓 Fixed price for: ${contract.period}\n` +
-    `Price: ${contract.priceUSDT} USD₮ for ${contract.period} (${contract.basePriceUSDT} USD₮/month)\n` +
+    `Price: ${contract.priceUSDT} USD₮ for ${contract.period} (${contract.localPrice}) (${contract.basePriceUSDT} USD₮/month)\n` +
     `SLA: ${contract.sla}\n` +
     `Status: ✅ Active\n` +
     `Activated: ${activated}\n` +
