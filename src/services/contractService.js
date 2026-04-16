@@ -88,7 +88,7 @@ function formatContract(contract) {
     `Provider: ${contract.provider}\n` +
     `Plan: ${contract.plan}\n` +
     `🗓 Fixed price for: ${contract.period}\n` +
-    `Price: ${contract.priceUSDT} USD₮ for ${contract.period} (${contract.localPrice}) (${contract.basePriceUSDT} USD₮/month)\n` +
+    `Price: ${contract.priceUSDT} USD₮ for ${contract.period} (${contract.localPrice})\n` +
     `SLA: ${contract.sla}\n` +
     `Status: ✅ Active\n` +
     `Activated: ${activated}\n` +
