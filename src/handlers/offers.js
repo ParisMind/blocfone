@@ -147,7 +147,8 @@ offersScene.action('confirm_payment', async (ctx) => {
     `🎉 *Contract Activated!*\n\n` +
     formatContract(contract) +
     `\n\n⭐ You have earned ${contract.stars} Telegram Stars!\n\n` +
-    `Your mobile service is now active. Use /status to view your contract at any time.`
+    `Your mobile service is now active. Use /status to view your contract at any time.\n\n` +
+    `_Remember, this is just a prototype/demo of a patent called blocfone®, you are not actually signing up for, nor paying for any mobile service._`
   );
 
   delete ctx.session.selectedOffer;
