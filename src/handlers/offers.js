@@ -12,6 +12,7 @@ const { createPaymentRequest, confirmPayment } = require('../services/walletServ
 const { createContract, formatContract } = require('../services/contractService');
 const { getLocationInfo, toLocalCurrency } = require('../services/locationService');
 const { sendStartButton } = require('./start');
+const { askEsimReady } = require('./esim');
 
 const offersScene = new Scenes.BaseScene('offers');
 
@@ -142,7 +143,7 @@ offersScene.action('confirm_payment', async (ctx) => {
 
   const contract = createContract(subscriberId, offer, payment, period, localPrice);
 
-  ctx.replyWithMarkdown(
+  await ctx.replyWithMarkdown(
     `🎉 *Contract Activated!*\n\n` +
     formatContract(contract) +
     `\n\n⭐ You have earned ${contract.stars} Telegram Stars!\n\n` +
@@ -154,6 +155,8 @@ offersScene.action('confirm_payment', async (ctx) => {
   delete ctx.session.period;
 
   ctx.scene.leave();
+
+  askEsimReady(ctx);
 });
 
 offersScene.action('cancel', (ctx) => {

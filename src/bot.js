@@ -4,6 +4,7 @@ const { onboardScene } = require('./handlers/onboard');
 const { offersScene } = require('./handlers/offers');
 const { showStatus } = require('./handlers/status');
 const { sendStartScreen, sendStartButton } = require('./handlers/start');
+const { askEsimReady, registerEsimHandlers } = require('./handlers/esim');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -21,6 +22,8 @@ bot.action('go_start', (ctx) => sendStartScreen(ctx));
 bot.command('offers', (ctx) => ctx.scene.enter('offers'));
 bot.command('status', showStatus);
 
+bot.command('esim', (ctx) => askEsimReady(ctx));
+
 bot.command('help', (ctx) => {
   ctx.reply(
     `ℹ️ How blocfone® works\n\n` +
@@ -32,6 +35,8 @@ bot.command('help', (ctx) => {
     `Built on US Patent 10,915,873 B2 | EU Patent EP3542333A1`
   );
 });
+
+registerEsimHandlers(bot);
 
 // ── Launch ─────────────────────────────────────────────────────────────────────
 
