@@ -28,6 +28,8 @@
   {
     "id": "offer-003",
     "provider": "CarrierAlpha",
+    "line1": "60 Minutes Voice & 100 Texts",
+    "line2": "10GB Data - 5G",
     "data": "Unlimited",
     "speed": "4G LTE",
     "coverage": "urban areas",
