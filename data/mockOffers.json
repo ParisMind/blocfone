@@ -2,6 +2,8 @@
   {
     "id": "offer-001",
     "provider": "ValueConnect",
+    "line1": "Unlimited Voice & Text",
+    "line2": "Unlimited Data - 5G",
     "data": "5GB",
     "speed": "4G LTE",
     "coverage": "nationwide",

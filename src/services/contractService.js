@@ -37,7 +37,7 @@ function createContract(subscriberId, offer, payment, period = '1 month', localP
     id: uuidv4(),
     subscriberId,
     provider: offer.provider,
-    plan: `${offer.data} · ${offer.speed}`,
+    plan: offer.line1 ? `${offer.line1}\n${offer.line2}` : `${offer.data} · ${offer.speed}`,
     priceUSDT: payment.amount,
     basePriceUSDT: offer.priceUSDT,
     localPrice,

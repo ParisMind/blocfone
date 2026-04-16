@@ -71,9 +71,12 @@ function formatOffer(offer, index, localPrice = '', period = '1 month') {
   const periodPrice = calculatePeriodPrice(offer.priceUSDT, period);
   const periodLabel = PERIOD_LABEL[period] || 'per month';
   const priceLocal = localPrice ? ` (${localPrice})` : '';
+  const planLines = offer.line1
+    ? `   ${offer.line1}\n   ${offer.line2}\n`
+    : `   ${offer.data} data · ${offer.speed}\n`;
   return (
     `${index}. *${offer.provider}*\n` +
-    `   ${offer.data} data · ${offer.speed}\n` +
+    planLines +
     `   ${coverage}\n` +
     `   🗓 Fixed price for: ${period}\n` +
     `   💰 ${periodPrice} USD₮ ${periodLabel}${priceLocal}\n` +
