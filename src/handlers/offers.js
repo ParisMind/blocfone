@@ -46,7 +46,15 @@ offersScene.action(/^period_(.+)$/, (ctx) => {
   );
 });
 
-// ── Step 2a: User wants to type location ──────────────────────────────────────
+// ── Cancel — MUST be registered before on('text') ─────────────────────────────
+
+offersScene.hears('❌ Cancel', (ctx) => {
+  ctx.session.awaitingTypedLocation = false;
+  ctx.scene.leave();
+  sendStartButton(ctx);
+});
+
+// ── Step 2a: User taps Type my location ───────────────────────────────────────
 
 offersScene.hears('✏️ Type my location', (ctx) => {
   ctx.session.awaitingTypedLocation = true;
@@ -94,16 +102,20 @@ offersScene.on('location', async (ctx) => {
 });
 
 // ── Step 3b: Receive typed location ───────────────────────────────────────────
+// Registered AFTER hears handlers so they take priority
 
-offersScene.on('text', async (ctx) => {
-  if (!ctx.session.awaitingTypedLocation) return;
+offersScene.on('text', async (ctx, next) => {
+  // Only handle text if we're awaiting a typed location or at the location step
+  const atLocationStep = ctx.session.period && !ctx.session.city;
+  if (!ctx.session.awaitingTypedLocation && !atLocationStep) return next();
 
   const query = ctx.message.text.trim();
-  await ctx.reply(`Searching for "${query}"...`);
+  await ctx.reply(`Searching for "${query}"...`, Markup.removeKeyboard());
 
   const result = await getLocationInfoFromText(query);
 
   if (!result) {
+    ctx.session.awaitingTypedLocation = true;
     return ctx.reply(
       `Sorry, we couldn't find that location. Please try again with a different city, postcode, or zip code.`
     );
@@ -111,13 +123,6 @@ offersScene.on('text', async (ctx) => {
 
   ctx.session.awaitingTypedLocation = false;
   await showOffers(ctx, result.city, result.currency);
-});
-
-// ── Cancel from keyboard ───────────────────────────────────────────────────────
-
-offersScene.hears('❌ Cancel', (ctx) => {
-  ctx.scene.leave();
-  sendStartButton(ctx);
 });
 
 // ── Step 4: Subscriber selects an offer ───────────────────────────────────────
@@ -170,13 +175,10 @@ offersScene.action('confirm_payment', async (ctx) => {
     return ctx.scene.leave();
   }
 
-  // Confirm payment and carry the amount through
   const payment = confirmPayment(paymentRequest.address);
   payment.amount = paymentRequest.amount;
 
-  // Calculate local currency equivalent for the contract
   const localPrice = await toLocalCurrency(payment.amount, currency);
-
   const contract = createContract(subscriberId, offer, payment, period, localPrice);
 
   await ctx.replyWithMarkdown(
@@ -190,9 +192,10 @@ offersScene.action('confirm_payment', async (ctx) => {
   delete ctx.session.selectedOffer;
   delete ctx.session.paymentRequest;
   delete ctx.session.period;
+  delete ctx.session.city;
+  delete ctx.session.awaitingTypedLocation;
 
   ctx.scene.leave();
-
   askEsimReady(ctx);
 });
 
