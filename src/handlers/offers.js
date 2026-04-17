@@ -20,7 +20,7 @@ const offersScene = new Scenes.BaseScene('offers');
 
 offersScene.enter((ctx) => {
   ctx.replyWithMarkdown(
-    `🗓 *What time period would you like the offers to be a fixed price?*`,
+    `🔒 *How long would you like to lock in your price?*`,
     Markup.inlineKeyboard([
       Markup.button.callback('1 Day',   'period_1 day'),
       Markup.button.callback('1 Week',  'period_1 week'),
