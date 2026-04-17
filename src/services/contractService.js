@@ -93,8 +93,7 @@ function formatContract(contract) {
     `Status: ✅ Active\n` +
     `Activated: ${activated}\n` +
     `Renews: ${expires}\n` +
-    `Tx: \`${contract.txHash}\`\n\n` +
-    `_Remember, this is just a prototype/demo of a patent called blocfone®, you are not actually signing up for, nor paying for any mobile service._`
+    `Tx: \`${contract.txHash}\``
   );
 }
 
