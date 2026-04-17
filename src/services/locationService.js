@@ -65,13 +65,14 @@ async function getLocationInfo(lat, lon) {
     const city =
       addr.city || addr.town || addr.village || addr.county || addr.state || 'your area';
 
+    const country = addr.country || '';
     const countryCode = (addr.country_code || 'us').toLowerCase();
     const currency = CURRENCY_MAP[countryCode] || { code: 'USD', symbol: '$' };
 
-    return { city, countryCode, currency };
+    return { city, country, countryCode, currency };
   } catch (err) {
     console.error('Reverse geocoding failed:', err.message);
-    return { city: 'your area', countryCode: 'us', currency: { code: 'USD', symbol: '$' } };
+    return { city: 'your area', country: '', countryCode: 'us', currency: { code: 'USD', symbol: '$' } };
   }
 }
 
@@ -131,10 +132,11 @@ async function getLocationInfoFromText(query) {
     const city =
       addr.city || addr.town || addr.village || addr.county || addr.state || query;
 
+    const country = addr.country || '';
     const countryCode = (addr.country_code || 'us').toLowerCase();
     const currency = CURRENCY_MAP[countryCode] || { code: 'USD', symbol: '$' };
 
-    return { city, countryCode, currency };
+    return { city, country, countryCode, currency };
   } catch (err) {
     console.error('Forward geocoding failed:', err.message);
     return null;

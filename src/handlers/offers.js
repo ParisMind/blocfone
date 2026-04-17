@@ -66,9 +66,10 @@ offersScene.hears('✏️ Type service location/country', (ctx) => {
 
 // ── Shared: show offers once location is resolved ─────────────────────────────
 
-async function showOffers(ctx, city, currency) {
+async function showOffers(ctx, city, currency, country = '') {
   const period = ctx.session.period || '1 month';
   ctx.session.city = city;
+  ctx.session.country = country;
   ctx.session.currency = currency;
 
   const subscriberId = String(ctx.from.id);
@@ -83,8 +84,9 @@ async function showOffers(ctx, city, currency) {
     Markup.button.callback(`${i + 1}. ${o.provider}`, `select_${o.id}`)
   );
 
+  const locationLabel = country ? `${city}, ${country}` : city;
   ctx.replyWithMarkdown(
-    `📡 *Here are the best offers where you are now in ${city}*\n\n${lines}\n\nTap a plan to select it, or /start to go back.`,
+    `📡 *Here are the best offers in ${locationLabel}*\n\n${lines}\n\nTap a plan to select it, or /start to go back.`,
     Markup.inlineKeyboard(buttons, { columns: 1 })
   );
 }
@@ -97,8 +99,8 @@ offersScene.on('location', async (ctx) => {
 
   await ctx.reply('Got it — searching for plans near you...', Markup.removeKeyboard());
 
-  const { city, currency } = await getLocationInfo(latitude, longitude);
-  await showOffers(ctx, city, currency);
+  const { city, country, currency } = await getLocationInfo(latitude, longitude);
+  await showOffers(ctx, city, currency, country);
 });
 
 // ── Step 3b: Receive typed location ───────────────────────────────────────────
@@ -122,7 +124,7 @@ offersScene.on('text', async (ctx, next) => {
   }
 
   ctx.session.awaitingTypedLocation = false;
-  await showOffers(ctx, result.city, result.currency);
+  await showOffers(ctx, result.city, result.currency, result.country);
 });
 
 // ── Step 4: Subscriber selects an offer ───────────────────────────────────────
