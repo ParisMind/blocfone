@@ -149,8 +149,14 @@ offersScene.action(/^select_(.+)$/, (ctx) => {
     ? `${offer.line1} / ${offer.line2}`
     : `${offer.data} · ${offer.speed}`;
 
+  const city = ctx.session.city || '';
+  const country = ctx.session.country || '';
+  const locationLine = (city || country)
+    ? `🌐 Location: ${[city, country].filter(Boolean).join(', ')}\n`
+    : '';
+
   ctx.replyWithMarkdown(
-    `✅ You selected *${offer.provider} — ${planSummary}* for *${period}*\n\n` +
+    `✅ You selected *${offer.provider} — ${planSummary}* for *${period}*\n${locationLine}\n` +
     `To activate your contract, send:\n\n` +
     `💰 *${payment.amount} USD₮*\n` +
     `📬 To address: \`${payment.address}\`\n` +
@@ -181,7 +187,9 @@ offersScene.action('confirm_payment', async (ctx) => {
   payment.amount = paymentRequest.amount;
 
   const localPrice = await toLocalCurrency(payment.amount, currency);
-  const contract = createContract(subscriberId, offer, payment, period, localPrice);
+  const city = ctx.session.city || '';
+  const country = ctx.session.country || '';
+  const contract = createContract(subscriberId, offer, payment, period, localPrice, city, country);
 
   await ctx.replyWithMarkdown(
     `🎉 *Contract Activated!*\n\n` +
