@@ -59,7 +59,7 @@ offersScene.hears('❌ Cancel', (ctx) => {
 offersScene.hears('✏️ Type service location/country', (ctx) => {
   ctx.session.awaitingTypedLocation = true;
   ctx.reply(
-    'Please type your preferred service city, postcode, or zip code.',
+    'Please type your preferred service country and city below.',
     Markup.removeKeyboard()
   );
 });
