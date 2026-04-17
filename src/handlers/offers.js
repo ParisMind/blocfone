@@ -10,7 +10,7 @@ const { Scenes, Markup } = require('telegraf');
 const { getOffersForSubscriber, getOfferById, formatOffer, calculatePeriodPrice } = require('../services/offerService');
 const { createPaymentRequest, confirmPayment } = require('../services/walletService');
 const { createContract, formatContract } = require('../services/contractService');
-const { getLocationInfo, toLocalCurrency } = require('../services/locationService');
+const { getLocationInfo, getLocationInfoFromText, toLocalCurrency } = require('../services/locationService');
 const { sendStartButton } = require('./start');
 const { askEsimReady } = require('./esim');
 
@@ -37,23 +37,29 @@ offersScene.action(/^period_(.+)$/, (ctx) => {
   ctx.session.period = period;
 
   ctx.reply(
-    `📍 To show you the best available plans, blocfone® needs your current location.`,
+    `📍 To show you the best available plans, blocfone® needs your service location.\n\nShare your location automatically or type it manually below.`,
     Markup.keyboard([
       [Markup.button.locationRequest('📍 Share my location')],
+      ['✏️ Type my location'],
       ['❌ Cancel'],
     ]).resize().oneTime()
   );
 });
 
-// ── Step 3: Receive location and show offers ───────────────────────────────────
+// ── Step 2a: User wants to type location ──────────────────────────────────────
 
-offersScene.on('location', async (ctx) => {
-  const { latitude, longitude } = ctx.message.location;
+offersScene.hears('✏️ Type my location', (ctx) => {
+  ctx.session.awaitingTypedLocation = true;
+  ctx.reply(
+    'Please type your preferred service city, postcode, or zip code.',
+    Markup.removeKeyboard()
+  );
+});
+
+// ── Shared: show offers once location is resolved ─────────────────────────────
+
+async function showOffers(ctx, city, currency) {
   const period = ctx.session.period || '1 month';
-
-  ctx.session.location = { latitude, longitude };
-
-  const { city, currency } = await getLocationInfo(latitude, longitude);
   ctx.session.city = city;
   ctx.session.currency = currency;
 
@@ -69,12 +75,42 @@ offersScene.on('location', async (ctx) => {
     Markup.button.callback(`${i + 1}. ${o.provider}`, `select_${o.id}`)
   );
 
-  await ctx.reply('Got it — searching for plans near you...', Markup.removeKeyboard());
-
   ctx.replyWithMarkdown(
     `📡 *Here are the best offers where you are now in ${city}*\n\n${lines}\n\nTap a plan to select it, or /start to go back.`,
     Markup.inlineKeyboard(buttons, { columns: 1 })
   );
+}
+
+// ── Step 3a: Receive GPS location ─────────────────────────────────────────────
+
+offersScene.on('location', async (ctx) => {
+  const { latitude, longitude } = ctx.message.location;
+  ctx.session.location = { latitude, longitude };
+
+  await ctx.reply('Got it — searching for plans near you...', Markup.removeKeyboard());
+
+  const { city, currency } = await getLocationInfo(latitude, longitude);
+  await showOffers(ctx, city, currency);
+});
+
+// ── Step 3b: Receive typed location ───────────────────────────────────────────
+
+offersScene.on('text', async (ctx) => {
+  if (!ctx.session.awaitingTypedLocation) return;
+
+  const query = ctx.message.text.trim();
+  await ctx.reply(`Searching for "${query}"...`);
+
+  const result = await getLocationInfoFromText(query);
+
+  if (!result) {
+    return ctx.reply(
+      `Sorry, we couldn't find that location. Please try again with a different city, postcode, or zip code.`
+    );
+  }
+
+  ctx.session.awaitingTypedLocation = false;
+  await showOffers(ctx, result.city, result.currency);
 });
 
 // ── Cancel from keyboard ───────────────────────────────────────────────────────

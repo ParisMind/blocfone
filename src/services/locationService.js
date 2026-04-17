@@ -107,4 +107,38 @@ async function toLocalCurrency(amountUSD, currency) {
   return `≈ ${currency.symbol}${converted}`;
 }
 
-module.exports = { getLocationInfo, toLocalCurrency };
+/**
+ * Forward geocoding — converts a typed city, postcode, or zip code to
+ * the same location info shape as getLocationInfo().
+ * @param {string} query - user-typed location string
+ * @returns {Promise<{ city: string, countryCode: string, currency: { code: string, symbol: string } }>}
+ */
+async function getLocationInfoFromText(query) {
+  try {
+    const encoded = encodeURIComponent(query);
+    const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1&addressdetails=1`;
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'blocfone-demo/1.0 (hello@blocfone.io)' },
+    });
+
+    if (!res.ok) throw new Error(`Nominatim error: ${res.status}`);
+
+    const results = await res.json();
+    if (!results || results.length === 0) return null;
+
+    const addr = results[0].address || {};
+
+    const city =
+      addr.city || addr.town || addr.village || addr.county || addr.state || query;
+
+    const countryCode = (addr.country_code || 'us').toLowerCase();
+    const currency = CURRENCY_MAP[countryCode] || { code: 'USD', symbol: '$' };
+
+    return { city, countryCode, currency };
+  } catch (err) {
+    console.error('Forward geocoding failed:', err.message);
+    return null;
+  }
+}
+
+module.exports = { getLocationInfo, getLocationInfoFromText, toLocalCurrency };
