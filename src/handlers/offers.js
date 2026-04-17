@@ -40,7 +40,7 @@ offersScene.action(/^period_(.+)$/, (ctx) => {
     `📍 To show you the best available plans, blocfone® needs your service location.\n\nShare your location automatically or type it manually below.`,
     Markup.keyboard([
       [Markup.button.locationRequest('📍 Share my location')],
-      ['✏️ Type preferred service location country and city/state'],
+      ['✏️ Type service location/country'],
       ['❌ Cancel'],
     ]).resize().oneTime()
   );
@@ -56,7 +56,7 @@ offersScene.hears('❌ Cancel', (ctx) => {
 
 // ── Step 2a: User taps Type my location ───────────────────────────────────────
 
-offersScene.hears('✏️ Type preferred service location country and city/state', (ctx) => {
+offersScene.hears('✏️ Type service location/country', (ctx) => {
   ctx.session.awaitingTypedLocation = true;
   ctx.reply(
     'Please type your preferred service city, postcode, or zip code.',
