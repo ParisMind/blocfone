@@ -87,18 +87,18 @@ function formatContract(contract) {
   const expires = formatDate(contract.expiresAt);
   return (
     `📋 *Active Contract*\n\n` +
-    `Provider: ${contract.provider}\n` +
+    `📡 Provider: ${contract.provider}\n` +
     (contract.city || contract.country
       ? `🌐 Location: ${[contract.city, contract.country].filter(Boolean).join(', ')}\n`
       : '') +
-    `Plan: ${contract.plan}\n` +
+    `📱 Plan: ${contract.plan}\n` +
     `🗓 Fixed price for: ${contract.period}\n` +
-    `Price: ${contract.priceUSDT} USD₮ for ${contract.period} (${contract.localPrice})\n` +
-    `SLA: ${contract.sla}\n` +
+    `💰 Price: ${contract.priceUSDT} USD₮ for ${contract.period} (${contract.localPrice})\n` +
+    `🛡 SLA: ${contract.sla}\n` +
     `Status: ✅ Active\n` +
-    `Activated: ${activated}\n` +
-    `Renews: ${expires}\n` +
-    `Tx: \`${contract.txHash}\``
+    `🗓 Activated: ${activated}\n` +
+    `🗓 Renews: ${expires}\n` +
+    `🔗 Tx: \`${contract.txHash}\``
   );
 }
 
